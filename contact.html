@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact</title>
+<link rel="stylesheet" href="styles.css">
+<script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+<script>
+  (function () {
+    emailjs.init("u2NmZ3AxXh7cMyKL2"); // Updated with the provided public key
+  })();
+
+  let messageCount = 0; // Counter for sent messages
+  const maxMessages = 5; // Maximum allowed messages
+
+  document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("contact-form")
+      .addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        if (messageCount >= maxMessages) {
+          alert("You have reached the maximum number of messages allowed. Please try again later.");
+          return;
+        }
+
+        const form = this;
+        const name = form.querySelector("#name").value;
+        const email = form.querySelector("#email").value;
+        const message = form.querySelector("#message").value;
+
+        emailjs.sendForm("service_q8jey4t", "template_ihskdzu", form) // Updated service_id and template_id
+          .then(
+            function () {
+              messageCount++; // Increment message count
+              form.reset(); // Clear form fields
+              const successPage = `
+                <html>
+                  <head>
+                    <title>Message Sent</title>
+                    <link rel="stylesheet" href="styles.css">
+                  </head>
+                  <body>
+                    <header>
+                      <h1>Message Sent Successfully!</h1>
+                    </header>
+                    <section>
+                      <p><strong>Name:</strong> ${name}</p>
+                      <p><strong>Email:</strong> ${email}</p>
+                      <p><strong>Message:</strong> ${message}</p>
+                      <a href="contact.html">Back to Contact Form</a>
+                    </section>
+                  </body>
+                </html>
+              `;
+              const newWindow = window.open("", "_blank");
+              newWindow.document.write(successPage);
+            },
+            function (error) {
+              console.error("Error sending message: ", error);
+              alert("Failed to send message. Please try again later.");
+            }
+          );
+      });
+  });
+</script>
+</head>
+<body>
+<header>
+<nav>
+<ul>
+<li><a href ="index.html">Homepage</a></li>
+<li><a href ="resume.html">Resume</a></li>
+<li><a href ="profile.html">Profile</a></li>
+</ul>
+</nav>
+<h1>Contact Me</h1>
+</header>
+<section>
+<form id="contact-form">
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="from_name" required>
+
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="reply_to" required>
+
+    <label for="message">Message:</label>
+    <textarea id="message" name="message" rows="5" required></textarea>
+
+    <button type="submit">Send</button>
+</form>
+</section>
+</body>
+</html>
